@@ -36,4 +36,22 @@ app.MapPost("api/homeworks", async ([FromServices] HomeworksContext dbContext, [
     return Results.Ok();
 });
 
+app.MapPut("api/homeworks/{id}", async ([FromServices] HomeworksContext dbContext, [FromBody] Homework homework, [FromRoute] Guid id) =>
+{
+    var CurrentHomework = dbContext.Homeworks.Find(id);
+
+    if(CurrentHomework != null){
+        CurrentHomework.CategoryId = homework.CategoryId;
+        CurrentHomework.Title = homework.Title;
+        CurrentHomework.PriorityHomework = homework.PriorityHomework;
+        CurrentHomework.Description = homework.Description;
+
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
+});
+
 app.Run();
