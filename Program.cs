@@ -54,4 +54,19 @@ app.MapPut("api/homeworks/{id}", async ([FromServices] HomeworksContext dbContex
     return Results.NotFound();
 });
 
+app.MapDelete("/api/homeworks/{id}", async ([FromServices] HomeworksContext dbContext, [FromRoute] Guid id) =>
+{
+    var CurrentHomework = dbContext.Homeworks.Find(id);
+
+    if(CurrentHomework != null)
+    {
+        dbContext.Remove(CurrentHomework);
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
+});
+
 app.Run();
