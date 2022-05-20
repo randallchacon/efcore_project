@@ -17,4 +17,9 @@ app.MapGet("/dbconnection", async ([FromServices] HomeworksContext dbContext) =>
     return Results.Ok("Database in memory: " + dbContext.Database.IsInMemory());
 });
 
+app.MapGet("api/homeworks", async ([FromServices] HomeworksContext dbContext) =>
+{
+    return Results.Ok(dbContext.Homeworks.Include(p => p.Category).Where(p => p.PriorityHomework == efcore_project.Models.Priority.Low));
+});
+
 app.Run();
