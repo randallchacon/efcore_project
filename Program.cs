@@ -1,6 +1,7 @@
 using efcore_project;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using efcore_project.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,20 @@ app.MapGet("/dbconnection", async ([FromServices] HomeworksContext dbContext) =>
 
 app.MapGet("api/homeworks", async ([FromServices] HomeworksContext dbContext) =>
 {
-    return Results.Ok(dbContext.Homeworks.Include(p => p.Category).Where(p => p.PriorityHomework == efcore_project.Models.Priority.Low));
+    //return Results.Ok(dbContext.Homeworks.Include(p => p.Category).Where(p => p.PriorityHomework == efcore_project.Models.Priority.Low));
+    return Results.Ok(dbContext.Homeworks.Include(p => p.Category));
+});
+
+app.MapPost("api/homeworks", async ([FromServices] HomeworksContext dbContext, [FromBody] Homework homework) =>
+{
+    homework.HomeworkId = Guid.NewGuid();
+    homework.CreationDate = DateTime.Now;
+    await dbContext.AddAsync(homework);
+    //await dbContext.Homeworks.AddAsync(homework); //another way
+
+    await dbContext.SaveChangesAsync();
+
+    return Results.Ok();
 });
 
 app.Run();
