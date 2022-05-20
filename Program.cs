@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<HomeworksContext>(p => p.UseInMemoryDatabase("HomeworksDB"));
+//builder.Services.AddDbContext<HomeworksContext>(p => p.UseInMemoryDatabase("HomeworksDB"));
+builder.Services.AddSqlServer<HomeworksContext>(builder.Configuration.GetConnectionString("cnHomeworks"));
 
 var app = builder.Build();
 
